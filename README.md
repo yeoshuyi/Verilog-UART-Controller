@@ -1,4 +1,4 @@
-# ULL High-Throughput FPGA-UART Bridge with Speculative BRAM FIFO
+# ULL High-Throughput FPGA-UART Bridge with 0 Latency Speculative-Write BRAM FIFO with Async Clock Domains
 
 ## Design Specifications
 1) FPGA Board:     Arty-S7
@@ -12,13 +12,13 @@
 ## Current Testbench Timings
  - Worst Negative Slack:   +0.273ns
  - Worst Hold Slack:       +0.114ns
- - End-of-frame to Data:   -58.33ns*
+ - End-of-frame to Data:   -58.33ns* <br/>
 *Data appears at FIFO before frame even ends using speculative write and middle-of-bit measurement
 
 ### Overhead Latency Contributions
  - RX CDC 2-FF Sync:       1.936ns (0.5 tick at 255MHz Domain)
  - Receiver Moore FSM:     3.473ns (1 tick at 255MHz Domain)
- - FIFO Ptr CDC 2-FF Sync: 20.150ns (2 tick at 100MHz Domain)
+ - FIFO Ptr CDC 2-FF Sync: 20.150ns (2 tick at 100MHz Domain) <br/>
 Further optimization will prove difficult due to 2-FF limitations. <br/>
 Possible optimization by switching to Meanly FSM.
 
