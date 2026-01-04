@@ -5,8 +5,8 @@
 // Create Date: 01/03/2026 02:22:56 PM
 // Design Name: ULL High Throughput 6Mbaud UART Interface with Speculative FWFT BRAM FIFO
 // Module Name: top
-// Project Name: 
-// Target Devices: 
+// Project Name: UART Interface
+// Target Devices: Arty-s7 25
 // Tool Versions: 
 // Description: 
 // 
@@ -23,8 +23,6 @@ module top(
     input reset,
     input CLK100MHZ,
     input uart_rxd_out,
-    output wire rxTick,
-    output wire txTick,
     output [8:0] rxData
     );
     
@@ -33,6 +31,7 @@ module top(
     wire rxCommitWrite;
     wire rxWriteEn;
     wire rxRollbackWrite;
+    wire rxTick;
     wire [8:0] rxDataFifo;
     wire stable288;
     wire systemReset = reset || !stable288;
@@ -74,8 +73,9 @@ module top(
         .commitWrite(rxCommitWrite),
         .rollbackWrite(rxRollbackWrite),
         .readClk(CLK100MHZ),
-        .readEn(1'b0),
-        .dataOut(rxData)
+        .readEn(1'b1),
+        .dataOut(rxData),
+        .reset(reset)
     );
     
 //    baudGen txBaudGen

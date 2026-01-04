@@ -13,9 +13,9 @@ module freqSynth
     MMCME2_ADV
     #(
         .BANDWIDTH("OPTIMIZED"),
-        .DIVCLK_DIVIDE(5),      //100MHz/5 = 20MHz
-        .CLKFBOUT_MULT_F(43.2), //20MHz*43.2 = 864MHz 
-        .CLKOUT0_DIVIDE_F(3.0), //864MHz/3 = 288MHz
+        .DIVCLK_DIVIDE(5),    
+        .CLKFBOUT_MULT_F(36.0), 
+        .CLKOUT0_DIVIDE_F(2.5),
         .CLKFBOUT_PHASE(0.0),
         .CLKIN1_PERIOD(10.0),
         .CLKOUT0_DUTY_CYCLE(0.5),

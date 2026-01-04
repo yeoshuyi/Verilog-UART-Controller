@@ -95,7 +95,7 @@ module uartRX
             begin
                 if (tick)
                 begin
-                    if (numTick == 7)
+                    if (numTick == 6)
                     begin
                         nextNumTick = 0;
                         nextState = rcv;

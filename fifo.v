@@ -24,7 +24,7 @@ module fifo
     //Read
     input wire readClk,
     input wire readEn,
-    output wire [8:0] dataOut,
+    output reg [8:0] dataOut,
     output wire empty,
     output wire notEmpty
 );
@@ -98,9 +98,14 @@ module fifo
         if (reset)
         begin 
             rdPtr <= 0;
-        end else if (readEn && notEmpty)
+            dataOut <= 9'd0;
+        end else if (notEmpty)
         begin
-            rdPtr <= rdPtr + 1;    
+            if (readEn)
+            begin
+                rdPtr <= rdPtr + 1;
+            end
+            dataOut <= mem[rdPtr[11:0]];    
         end
     end
     
@@ -126,6 +131,6 @@ module fifo
     assign almostFull = (wrPtrGray[12] != rdPtrGraySync[1][12]) &&
                         (wrPtrGray[11] != rdPtrGraySync[1][11]);                     
     
-    assign dataOut = mem[rdPtr[11:0]];
+    //assign dataOut = mem[rdPtr[11:0]];
 
 endmodule

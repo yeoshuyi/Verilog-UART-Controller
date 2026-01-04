@@ -14,8 +14,8 @@ always @ (posedge CLK288MHZ or posedge baudReset)
     begin
         if (reset || baudReset)
         begin
-            tick <= 1'b1;
-            counter <= 2'd1;
+            tick <= 1'b0;
+            counter <= 2'd0;
         end else
         begin
             tick <= nextTick;
