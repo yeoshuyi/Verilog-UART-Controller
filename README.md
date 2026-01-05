@@ -16,9 +16,9 @@
 *Data appears at FIFO before frame even ends using speculative write and middle-of-bit measurement
 
 ### Overhead Latency Contributions
- - RX CDC 2-FF Sync:       1.936ns (0.5 tick at 255MHz Domain)
+ - RX CDC 2-FF Sync:       1.936ns (0.5-1.5 tick at 255MHz Domain)
  - Receiver Moore FSM:     3.473ns (1 tick at 255MHz Domain)
- - FIFO Ptr CDC 2-FF Sync: 20.150ns (2 tick at 100MHz Domain) <br/>
+ - FIFO Ptr CDC 2-FF Sync: 20.150ns (1-2 tick at 100MHz Domain) <br/>
 Further optimization will prove difficult due to 2-FF limitations. <br/>
 Possible optimization by switching to Meanly FSM.
 
@@ -42,13 +42,13 @@ Possible optimization by switching to Meanly FSM.
 
 ## Pictorials
 ![alt text](https://github.com/yeoshuyi/Custom-6M-Baud-UART-with-Speculative-FIFO/blob/main/OverallLatency.png "Overall Latency")
-> Byte transmission starts at 11,000ns and ends at 12,833ns. Data is ready at the FIFO read by 12,775ns (Immediately after stop bit verification)</br>
+> Byte transmission starts at 11,000ns and ends at 12,833ns. Data is ready at the FIFO read by 12,775ns (Immediately after stop bit verification).</br>
 
 ![alt text](https://github.com/yeoshuyi/Custom-6M-Baud-UART-with-Speculative-FIFO/blob/main/FFLatency.png "2-FF Async Latency")
-> 2-FF Stage to reject metastability contributes to a 1.936ns delay in RX reading</br>
+> 2-FF Stage to reject metastability contributes to a 1.936ns delay in RX reading. This can potentially reach up to 5.210ns if RX transmission starts right after a negative edge at the 288MHz clock. </br>
 
 ![alt text](https://github.com/yeoshuyi/Custom-6M-Baud-UART-with-Speculative-FIFO/blob/main/TimingReport.png "Timing Report")
-> WNS and WHS within tolerance</br>
+> WNS and WHS within tolerance, achieved through pipelining and PBLOCK constraints.</br>
 
 ![alt text](https://github.com/yeoshuyi/Custom-6M-Baud-UART-with-Speculative-FIFO/blob/main/PowerReport.png "Power Report")
 
@@ -58,7 +58,7 @@ Possible optimization by switching to Meanly FSM.
 ## In-Depth Explaination
 
 ### CLK Generation
-The onboard 100MHz Crystal is insufficient to oversample the serial UART communication at 6M baud. Thus, a onboard MMCM(PLL) is used to synthesise a 288MHz CLK. Natively, the 288MHz CLK oversamples by x48. A simple counter is used to generate a tick every 3 288MHz clock cycles for 16x oversampling, while sequential logic can still flow at 288MHz. The tick counter is reset upon detection of start bit using a baud reset signal from the receiver, to ensure phase synchronisation with the 2-FF synchronised UART signal
+The onboard 100MHz Crystal is insufficient to oversample the serial UART communication at 6M baud. Thus, a onboard MMCM(PLL) is used to synthesise a 288MHz CLK. Natively, the 288MHz CLK oversamples by x48. A simple counter is used to generate a tick every 3 288MHz clock cycles for 16x oversampling, while sequential logic can still flow at 288MHz. The tick counter is reset upon detection of start bit using a baud reset signal from the receiver, to ensure phase synchronisation with the 2-FF synchronised UART signal.
 
 ### UART Receiver
 The receiver is modelled as a Moore FSM, which introduces 1 clock cycle of delay for buffering. At the input, the asynchronous UART signal is put through 2-FF synchronisation to eliminate metainstability. This 2-FF system utilizes the IOB and triggers at double edge to reduce latency down to around 0.5 clock cycles. The total overhead latency through the UART receiver is thus around 1.5 clock cycles, as measured in the pictorial above. </br>
